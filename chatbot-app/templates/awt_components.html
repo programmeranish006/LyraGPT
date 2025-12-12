@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWT Components Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .nav {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 1px solid #dee2e6;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .nav a {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        
+        .nav a:hover {
+            background: #764ba2;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .component-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            border-radius: 5px;
+        }
+        
+        .component-section h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+        }
+        
+        .component-section h3 {
+            color: #764ba2;
+            margin-top: 15px;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+        
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95em;
+            line-height: 1.4;
+        }
+        
+        .component-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .component-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .component-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+        
+        .component-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+        
+        .component-card p {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 0.95em;
+        }
+        
+        .properties {
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+        
+        .properties strong {
+            color: #667eea;
+        }
+        
+        .highlight {
+            background: #fff3cd;
+            padding: 15px;
+            border-left: 3px solid #ffc107;
+            border-radius: 4px;
+            margin: 15px 0;
+        }
+        
+        .example-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .example-section h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        footer {
+            background: #2d2d2d;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-size: 1em;
+        }
+        
+        .btn:hover {
+            background: #764ba2;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+        }
+        
+        .comparison-table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .comparison-table td {
+            padding: 12px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .comparison-table tr:hover {
+            background: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🖥️ AWT Components Guide</h1>
+            <p>Complete Reference for Java AWT (Abstract Window Toolkit) Components</p>
+        </header>
+        
+        <div class="nav">
+            <a href="#containers">Containers</a>
+            <a href="#input">Input Components</a>
+            <a href="#display">Display Components</a>
+            <a href="#buttons">Buttons</a>
+            <a href="#selection">Selection</a>
+            <a href="#graphics">Graphics</a>
+        </div>
+        
+        <div class="content">
+            <!-- Introduction -->
+            <section class="component-section">
+                <h2>What is AWT?</h2>
+                <p>The Abstract Window Toolkit (AWT) is Java's original platform-independent windowing, graphics, and user-interface widget toolkit. It provides a set of components for building graphical user interfaces (GUIs) in Java.</p>
+                <div class="highlight">
+                    <strong>Note:</strong> While Swing and JavaFX are more modern alternatives, AWT is still widely used and provides a lightweight foundation for GUI development.
+                </div>
+            </section>
+            
+            <!-- Containers -->
+            <section id="containers" class="component-section">
+                <h2>Container Components</h2>
+                <p>Containers hold other components and manage their layout.</p>
+                
+                <div class="component-grid">
+                    <div class="component-card">
+                        <h4>Frame</h4>
+                        <p>The top-level window for your application. Every AWT application must have at least one Frame.</p>
+                        <div class="properties">
+                            <strong>Key Methods:</strong><br>
+                            • setTitle(String title)<br>
+                            • setSize(int width, int height)<br>
+                            • setVisible(boolean b)<br>
+                            • setLocationRelativeTo(Component c)
+                        </div>
+                        <div class="example-section">
+                            <h4>Example:</h4>
+                            <div class="code-block">Frame frame = new Frame("My App");
+frame.setSize(400, 300);
+frame.setVisible(true);</div>
+                        </div>
+                    </div>
+                    
+                    <div class="component-card">
+                        <h4>Panel</h4>
+                        <p>A lightweight container used to organize other components within a Frame or another Panel.</p>
+                        <div class="properties">
+                            <strong>Key Methods:</strong><br>
+                            • add(Component comp)<br>
+                            • setLayout(LayoutManager mgr)<br>
+                            • setBackground(Color c)
+                        </div>
+                        <div class="example-section">
+                            <h4>Example:</h4>
+                            <div class="code-block">Panel panel = new Panel();
+panel.setLayout(new FlowLayout());
+panel.add(new Button("Click Me"));</div>
+                        </div>
+                    </div>
+                    
+                    <div class="component-card">
+                        <h4>Dialog</h4>
+                        <p>A secondary window dependent on a Frame. Used for temporary interactions with users.</p>
+                        <div class="properties">
+                            <strong>Key Methods:</strong><br>
+                            • setTitle(String title)<br>
+                            • setModal(boolean b)<br>
+                            • setVisible(boolean b)
+                        </div>
+                        <div class="example-section">
+                            <h4>Example:</h4>
+                            <div class="code-block">Dialog dialog = new Dialog(frame, "Warning", true);
+dialog.setVisible(true);</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Input Components -->
+            <section id="input" class="component-section">
+                <h2>Input Components</h2>
+                <p>Components that allow users to input text and data.</p>
+                
+                <div class="component-grid">
+                    <div class="component-card">
+                        <h4>TextField</h4>
+                        <p>Single-line text input field. Perfect for names, emails, passwords, etc.</p>
+                        <div class="properties">
+                            <strong>Key Methods:</strong><br>
+                            • setText(String text)<br>
+                            • getText()<br>
+                            • setEchoChar(char c)<br>
+                            • addActionListener(ActionListener l)
+                        </div>
+                        <div class="example-section">
+                            <h4>Example:</h4>
+                            <div class="code-block">TextField tf = new TextField(20);
+tf.setText("Enter text");
+String input = tf.getText();</div>
+                        </div>
+                    </div>
+                    
+                    <div class="component-card">
+                        <h4>TextArea</h4>
+                        <p>Multi-line text input field with scrollbars for large text content.</p>
+                        <div class="properties">
+                            <strong>Key Methods:</strong><br>
+                            • append(String str)<br>
+                            • getText()<br>
+                            • setText(String text)<br>
+                            • setEditable(boolean b)
+                        </div>
+                        <div class="example-section">
+                            <h4>Example:</h4>
+                            <div class="code-block">TextArea ta = new TextArea(5, 20);
+ta.setText("Multiple lines");
+ta.append("\nNew line");</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Display Components -->
+            <section id="display" class="component-section">
+                <h2>Display Components</h2>
+                <p>Components for displaying information to users.</p>
+                
+                <div class="component-grid">
+                    <div class="component-card">
+                        <h4>Label</h4>
+                        <p>Displays read-only text or images. Typically used for form labels.</p>
+                        <div class="properties">
+                            <strong>Key Methods:</strong><br>
+                            • setText(String text)<br>
+                            • getText()<br>
+                            • setAlignment(int alignment)<br>
+                            • setFont(Font f)
+                        </div>
+                        <div class="example-section">
+                            <h4>Example:</h4>
+                            <div class="code-block">Label label = new Label("Name:");
+label.setFont(new Font("Arial", Font.BOLD, 14));</div>
+                        </div>
+                    </div>
+                    
+                    <div class="component-card">
+                        <h4>Canvas</h4>
+                        <p>A blank canvas for custom drawing using Graphics. Perfect for charts, games, and graphics.</p>
+                        <div class="properties">
+                            <strong>Key Methods:</strong><br>
+                            • paint(Graphics g)<br>
+                            • repaint()<br>
+                            • setBackground(Color c)
+                        </div>
+                        <div class="example-section">
+                            <h4>Example:</h4>
+                            <div class="code-block">Canvas canvas = new Canvas() {
+    public void paint(Graphics g) {
+        g.fillRect(10, 10, 50, 50);
+    }
+};</div>
+                        </div>
+                    </div>
+                    
+                    <div class="component-card">
+                        <h4>Scrollbar</h4>
+                        <p>Provides scrolling functionality for navigating through content.</p>
+                        <div class="properties">
+                            <strong>Constructor:</strong><br>
+                            new Scrollbar(int orientation, int value, int visible, int min, int max)<br>
+                            • Orientation: HORIZONTAL or VERTICAL
+                        </div>
+                        <div class="example-section">
+                            <h4>Example:</h4>
+                            <div class="code-block">Scrollbar sb = new Scrollbar(
+    Scrollbar.HORIZONTAL, 0, 10, 0, 100);</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Buttons -->
+            <section id="buttons" class="component-section">
+                <h2>Button Components</h2>
+                <p>Interactive components for user actions.</p>
+                
+                <div class="component-grid">
+                    <div class="component-card">
+                        <h4>Button</h4>
+                        <p>Standard push button that triggers an action when clicked.</p>
+                        <div class="properties">
+                            <strong>Key Methods:</strong><br>
+                            • addActionListener(ActionListener l)<br>
+                            • setLabel(String label)<br>
+                            • getLabel()<br>
+                            • setEnabled(boolean b)
+                        </div>
+                        <div class="example-section">
+                            <h4>Example:</h4>
+                            <div class="code-block">Button btn = new Button("Submit");
+btn.addActionListener(e -> {
+    System.out.println("Button clicked!");
+});</div>
+                        </div>
+                    </div>
+                    
+                    <div class="component-card">
+                        <h4>Checkbox</h4>
+                        <p>A toggle button with two states: checked or unchecked. Can be grouped for radio button behavior.</p>
+                        <div class="properties">
+                            <strong>Key Methods:</strong><br>
+                            • setState(boolean b)<br>
+                            • getState()<br>
+                            • setLabel(String label)<br>
+                            • addItemListener(ItemListener l)
+                        </div>
+                        <div class="example-section">
+                            <h4>Example:</h4>
+                            <div class="code-block">Checkbox cb = new Checkbox("Accept Terms");
+boolean isChecked = cb.getState();</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Selection Components -->
+            <section id="selection" class="component-section">
+                <h2>Selection Components</h2>
+                <p>Components that allow users to select from predefined options.</p>
+                
+                <div class="component-grid">
+                    <div class="component-card">
+                        <h4>Choice</h4>
+                        <p>Dropdown menu showing one selected item at a time. Compact for long lists.</p>
+                        <div class="properties">
+                            <strong>Key Methods:</strong><br>
+                            • addItem(String item)<br>
+                            • getSelectedItem()<br>
+                            • select(int index)<br>
+                            • addItemListener(ItemListener l)
+                        </div>
+                        <div class="example-section">
+                            <h4>Example:</h4>
+                            <div class="code-block">Choice choice = new Choice();
+choice.addItem("Option 1");
+choice.addItem("Option 2");
+String selected = choice.getSelectedItem();</div>
+                        </div>
+                    </div>
+                    
+                    <div class="component-card">
+                        <h4>List</h4>
+                        <p>Shows multiple items with optional multi-selection support. Takes up more space but shows all options.</p>
+                        <div class="properties">
+                            <strong>Key Methods:</strong><br>
+                            • add(String item)<br>
+                            • getSelectedItem()<br>
+                            • getSelectedItems()<br>
+                            • addItemListener(ItemListener l)
+                        </div>
+                        <div class="example-section">
+                            <h4>Example:</h4>
+                            <div class="code-block">List list = new List(5, true); // 5 rows, multi-select
+list.add("Item 1");
+String[] selected = list.getSelectedItems();</div>
+                        </div>
+                    </div>
+                    
+                    <div class="component-card">
+                        <h4>CheckboxGroup</h4>
+                        <p>Groups checkboxes to create radio button behavior (only one can be selected).</p>
+                        <div class="properties">
+                            <strong>Key Methods:</strong><br>
+                            • getSelectedCheckbox()<br>
+                            • setSelectedCheckbox(Checkbox c)
+                        </div>
+                        <div class="example-section">
+                            <h4>Example:</h4>
+                            <div class="code-block">CheckboxGroup group = new CheckboxGroup();
+Checkbox opt1 = new Checkbox("Option 1", group, false);
+Checkbox opt2 = new Checkbox("Option 2", group, false);</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Graphics -->
+            <section id="graphics" class="component-section">
+                <h2>Graphics & Layout</h2>
+                <p>Understanding how to draw and organize components.</p>
+                
+                <div class="component-grid">
+                    <div class="component-card">
+                        <h4>Layout Managers</h4>
+                        <p>Control how components are positioned and sized within containers.</p>
+                        <div class="properties">
+                            <strong>Common Layouts:</strong><br>
+                            • FlowLayout - Left to right, top to bottom<br>
+                            • BorderLayout - North, South, East, West, Center<br>
+                            • GridLayout - Grid of equal-sized cells<br>
+                            • GridBagLayout - Complex layouts with constraints
+                        </div>
+                    </div>
+                    
+                    <div class="component-card">
+                        <h4>Graphics Class</h4>
+                        <p>Used within Canvas.paint() to draw shapes, text, and images.</p>
+                        <div class="properties">
+                            <strong>Common Methods:</strong><br>
+                            • drawLine(int x1, int y1, int x2, int y2)<br>
+                            • fillRect(int x, int y, int w, int h)<br>
+                            • fillOval(int x, int y, int w, int h)<br>
+                            • drawString(String text, int x, int y)
+                        </div>
+                    </div>
+                    
+                    <div class="component-card">
+                        <h4>Event Listeners</h4>
+                        <p>Handle user interactions like clicks, key presses, and window events.</p>
+                        <div class="properties">
+                            <strong>Common Listeners:</strong><br>
+                            • ActionListener - Button clicks<br>
+                            • ItemListener - Checkbox/Choice selection<br>
+                            • WindowListener - Window events<br>
+                            • MouseListener - Mouse events
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Comparison Table -->
+            <section class="component-section">
+                <h2>Component Comparison</h2>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Component</th>
+                            <th>Purpose</th>
+                            <th>User Input</th>
+                            <th>Best For</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Label</strong></td>
+                            <td>Display text</td>
+                            <td>No</td>
+                            <td>Text labels, instructions</td>
+                        </tr>
+                        <tr>
+                            <td><strong>TextField</strong></td>
+                            <td>Single-line input</td>
+                            <td>Yes</td>
+                            <td>Names, emails, passwords</td>
+                        </tr>
+                        <tr>
+                            <td><strong>TextArea</strong></td>
+                            <td>Multi-line input</td>
+                            <td>Yes</td>
+                            <td>Comments, descriptions</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Button</strong></td>
+                            <td>Trigger action</td>
+                            <td>Click</td>
+                            <td>Submit, Cancel, OK buttons</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Checkbox</strong></td>
+                            <td>Toggle option</td>
+                            <td>Check/Uncheck</td>
+                            <td>Multiple selections, terms</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Choice</strong></td>
+                            <td>Select from dropdown</td>
+                            <td>Select one</td>
+                            <td>Single selection, space-saving</td>
+                        </tr>
+                        <tr>
+                            <td><strong>List</strong></td>
+                            <td>Show multiple items</td>
+                            <td>Select one or many</td>
+                            <td>Large lists, multiple selections</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Canvas</strong></td>
+                            <td>Custom drawing</td>
+                            <td>No (but can handle events)</td>
+                            <td>Graphics, games, charts</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+            
+            <!-- Quick Start -->
+            <section class="component-section">
+                <h2>Quick Start Guide</h2>
+                <h3>Basic AWT Application Structure:</h3>
+                <div class="code-block">import java.awt.*;
+import java.awt.event.*;
+
+public class MyApp extends Frame implements ActionListener {
+    public MyApp() {
+        setTitle("My Application");
+        setSize(400, 300);
+        setLocationRelativeTo(null);
+        setLayout(new FlowLayout());
+        
+        Button btn = new Button("Click Me");
+        btn.addActionListener(this);
+        add(btn);
+        
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
+            }
+        });
+        
+        setVisible(true);
+    }
+    
+    public void actionPerformed(ActionEvent e) {
+        System.out.println("Button clicked!");
+    }
+    
+    public static void main(String[] args) {
+        new MyApp();
+    }
+}</div>
+                <button class="btn" onclick="alert('To compile:\njavac MyApp.java\n\nTo run:\njava MyApp')">How to Compile & Run</button>
+            </section>
+        </div>
+        
+        <footer>
+            <p>&copy; 2025 AWT Components Guide | Java GUI Development</p>
+            <p>Based on Java AWT Documentation</p>
+        </footer>
+    </div>
+</body>
+</html>

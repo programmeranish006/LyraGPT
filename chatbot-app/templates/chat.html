@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lyra - StudyMate</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-area">
+           
+            <div class="chat-header">
+                <img class="profile-photo" src="{{ url_for('static', filename='images/lyra.jpg') }}" alt="Lyra">
+                <div class="bot-info">
+                    <div class="bot-name">Lyra - StudyMate</div>
+                    <div class="status" id="botStatus">
+                        <span id="statusText">online</span>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="icon-btn" id="menuBtn" title="Menu">⋮</button>
+                </div>
+            </div>
+            
+           
+           <div class="dropdown-menu" id="dropdownMenu">
+    <button class="menu-item" onclick="clearChat()">
+        <span>Clear Chat</span>
+    </button>
+    <button class="menu-item" onclick="signOut()">
+        <span>Sign Out</span>
+    </button>
+</div>
+
+           
+            <div class="messages" id="messagesContainer">
+                <div class="empty-chat">
+                    <div class="empty-chat-icon">💬</div>
+                    <div class="empty-chat-text">Start chatting with Lyra</div>
+                    <div class="empty-chat-subtext">Your AI study companion is here to help!</div>
+                </div>
+            </div>
+            
+          
+            <div class="typing-indicator" id="typingIndicator">
+                <div class="typing-bubble">
+                    <div class="typing-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+            
+           
+            <div class="message-input-area">
+                <input type="text" id="messageInput" placeholder="Type a message..." autocomplete="off">
+                <button id="sendBtn" class="send-btn" title="Send message">➤</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const messagesContainer = document.getElementById('messagesContainer');
+        const messageInput = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const typingIndicator = document.getElementById('typingIndicator');
+        const statusText = document.getElementById('statusText');
+        const menuBtn = document.getElementById('menuBtn');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        
+       
+        menuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdownMenu.classList.toggle('show');
+        });
+        
+       
+        document.addEventListener('click', (e) => {
+            if (!dropdownMenu.contains(e.target) && e.target !== menuBtn) {
+                dropdownMenu.classList.remove('show');
+            }
+        });
+        
+      
+        function clearChat() {
+            if (confirm('Are you sure you want to clear all messages?')) {
+                messagesContainer.innerHTML = `
+                    <div class="empty-chat">
+                        <div class="empty-chat-icon">💬</div>
+                        <div class="empty-chat-text">Start chatting with Lyra</div>
+                        <div class="empty-chat-subtext">Your AI study companion is here to help!</div>
+                    </div>
+                `;
+                dropdownMenu.classList.remove('show');
+            }
+        }
+        
+      
+        function signOut() {
+            if (confirm('Are you sure you want to sign out?')) {
+                window.location.href = '/auth/logout';
+            }
+        }
+        
+       
+        window.onload = async () => {
+            await loadHistory();
+            scrollToBottom();
+            messageInput.focus();
+        };
+        
+        async function loadHistory() {
+            try {
+                const response = await fetch('/api/history');
+                const data = await response.json();
+                
+                if (data.messages && data.messages.length > 0) {
+                    messagesContainer.innerHTML = '';
+                    data.messages.forEach(msg => {
+                        displayMessage(msg.content, msg.role);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading history:', error);
+            }
+        }
+        
+        sendBtn.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+        
+        async function sendMessage() {
+            const message = messageInput.value.trim();
+            if (!message) return;
+            
+            const emptyChat = messagesContainer.querySelector('.empty-chat');
+            if (emptyChat) emptyChat.remove();
+            
+            displayMessage(message, 'user');
+            messageInput.value = '';
+            
+            showTyping();
+            updateStatus('typing...');
+            
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({message})
+                });
+                
+                const data = await response.json();
+                hideTyping();
+                updateStatus('online');
+                displayMessage(data.response, 'assistant');
+                
+            } catch (error) {
+                hideTyping();
+                updateStatus('online');
+                displayMessage('Sorry, something went wrong. Please try again.', 'assistant');
+                console.error('Error:', error);
+            }
+        }
+        
+        function displayMessage(text, role) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role === 'user' ? 'sent' : 'received'}`;
+            
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: true 
+            });
+            
+            const formatted = text
+                .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*([^\*\n]+?)\*/g, '<em>$1</em>')
+                .replace(/###\s+(.+)$/gm, '<strong style="display:block;margin:6px 0 2px 0;font-size:1.05em">$1</strong>')
+                .replace(/##\s+(.+)$/gm, '<strong style="display:block;margin:6px 0 2px 0;font-size:1.1em">$1</strong>')
+                .replace(/^[\*\-]\s+(.+)$/gm, '• $1')
+                .replace(/\n\n/g, '<br><br>')
+                .replace(/\n/g, '<br>');
+            
+            messageDiv.innerHTML = `
+                <div class="message-content">${formatted}</div>
+                <div class="message-time">${timeString}</div>
+            `;
+            
+            messagesContainer.appendChild(messageDiv);
+            scrollToBottom();
+        }
+        
+        function showTyping() {
+            typingIndicator.classList.add('active');
+            scrollToBottom();
+        }
+        
+        function hideTyping() {
+            typingIndicator.classList.remove('active');
+        }
+        
+        function updateStatus(status) {
+            statusText.textContent = status;
+        }
+        
+        function scrollToBottom() {
+            setTimeout(() => {
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }, 100);
+        }
+    </script>
+</body>
+</html>
